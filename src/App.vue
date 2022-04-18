@@ -1,0 +1,113 @@
+<template>
+  <div class="container">
+    <router-view />
+  </div>
+</template>
+
+
+<style>
+/* html, */
+html {
+  background-color: #F0F7FF;
+  height: 100vh;
+}
+
+body{
+  margin: 0px;
+}
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  background-color: #F0F7FF;
+  word-spacing: 1px;
+  font-size: 16px;
+  min-height: 100vh;
+}
+
+:root{
+  --purple-color: #8855FF;
+  --blue-color: #83CBFF;
+  --sky-color: #00CCFF;
+  --green-color: #00CC88;
+  --yellow-color: #FFCC00;
+  --red-color: #FF2B56;
+  --dark-bg-image: linear-gradient(-121deg, #222222, #2B2B2B);
+  --dark-bg-image-hover: linear-gradient(-121deg, #414141, #2B2B2B);
+  --bg-color: #1E2023;
+  --sub-bg-color: #181818;
+  --title-size:calc(12px + 2vw);
+  --subtitle-size:calc(5px + 2vw);
+}
+
+.subtitle{
+  font-weight: 300;
+  font-size: 20px;
+  /* color: #526488; */
+  word-spacing: 2px;
+  padding-bottom: 15px;
+  color: #7a7a7a;
+}
+
+.title {
+  display: block;
+  font-weight: bold;
+  font-size: var(--title-size);
+  letter-spacing: 1px;
+  margin: 0px;
+  /* text-align: left; */
+}
+
+.input-single{
+    outline: none;
+    border-radius: 100rem;
+    /* height: 50px; */
+    border: none;
+    /* margin-bottom: 21px; */
+    font-size: large;
+    padding: 12px 20px;
+    width: 80%;
+    text-align: left; 
+  transition: 0.4s;   
+  background-color: #dadada;
+}
+
+.input-area{
+    outline: none;
+    border-radius: 21px;
+    height: 200px;
+    border: none;
+    /* margin-bottom: 21px; */
+    font-size: large;
+    padding: 20px;
+    width: 100%;
+    text-align: left; 
+  transition: 0.4s;   
+  background-color: #dadada;
+}
+
+.btn{
+    outline: none;
+    border-radius: 12px;
+    height: 50px;
+    border: none;
+    margin-bottom: 21px;
+    cursor: pointer;
+    /* background-image: linear-gradient(45deg, #1649FF , #7732FF); */
+    background-color: #5500ff;
+    color: white;
+    font-size: large;
+    margin-top: 21px;
+  transition: 0.3s;
+  padding: 0px 45px;
+}
+
+.btn:hover{
+  transition: 0.3s;
+  transform: translateY(-5px);
+}
+
+
+</style>
