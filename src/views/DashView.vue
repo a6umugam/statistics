@@ -17,7 +17,9 @@
       <h1 class="title left"><strong>Welcome back to </strong> Database  </h1>
 
       <div class="chart-box">
-        <h1>here comes the chart</h1>
+        <h2 class="left">Services Utilization<strong> Data Chart</strong> </h2>
+        <DoughnutChart :chartData="testData"  :options="options" />
+        <p class="right">*Hover on top of colors to know service name</p>
       </div>
       <h1 class="title left">Reports <strong>Section</strong> </h1>
       <div>
@@ -38,7 +40,14 @@ import AddForm from '../components/AddForm.vue'
 import firebase from 'firebase/compat/app';
 // const db = firebase.firestore();
 
+import { DoughnutChart } from 'vue-chart-3';
+import { Chart, registerables } from "chart.js";
+
+Chart.register(...registerables);
+
 export default {
+
+
   data(){
     return{
       scrollVal:0,
@@ -47,11 +56,63 @@ export default {
       datas:[],
       lastVisible:'',
       hasScrolledToBottom: false,
+
+      options: ({
+      responsive: true,
+      plugins: {
+        legend: {
+          display:false,
+          position: 'top',
+        },
+        title: {
+          display: false,
+          text: 'Chart.js Doughnut Chart',
+        },
+      },
+    }),
+
+      testData : {
+      labels: ['Accompagnement Physique. Déplacement',
+                    'Aide alimentaire',
+                    'Aide matérielle : meubles',
+                    'Aide Juridique, avocats, centre de justice de proximité',
+                    'Don de l’AFIO (cartes cadeaux pour épicerie, vêtements, jouets,manteaux, bottes)',
+                    'Interprétariat, Traduction',
+                    'Études',
+                    'Besoin et soutien pour la recherche des Garderie',
+                    'Immigration, parrainage, visa, RP, permis de travail et études',
+                    'Citoyenneté',
+                    'Socialisation, Réseautage, besoin de contacts',
+                    'Logement, Hébergement',
+                    'Opération bancaires',
+                    'Emploi',
+                    'Santé',
+                    'Informations sur les services et programmes gouvernementaux',
+                    'Formulaires',
+                    'Lecture et Rédaction lettres et de documents',
+                    'Soutien psychosocial',
+                    'Soutien en situation de violence conjugale',
+                    'Écoute, informations et références',
+                    'Interventions auprès des autres services',
+                    'Francisation',
+                    'PDI individuelle',
+                    'Suivis personnalisés',
+                    'Placement d’enfants en garderie'],
+      datasets: [
+        {
+          data: [30, 40, 60, 70, 5,30, 40, 60, 70, 5,30, 40, 60, 70, 5,30, 40, 60, 70, 5,30, 40, 60, 70, 5,6],
+          backgroundColor: ['#5D8AA8', '#F0F8FF', '#E32636', '#E52B50', '#FFBF00','#A4C639', '#FBCEB1', '#7FFFD4', '#B2BEB5', '#FF9966',
+                            '#007FFF', '#89CFF0', '#DEB887', '#E97451', '#536878','#77CEFF', '#0079AF', '#123E6B', '#97B0C4', '#A5C8ED',
+                            '#F4C2C2', '#DE5D83', '#CC5500', '#8A3324', '#A5C8ED','#FFEF00'],
+        },
+      ],
+    }
     }
   },
 components:{
   DataCard,
-  AddForm
+  AddForm,
+  DoughnutChart,
 },
 
   beforeMount () {
@@ -161,10 +222,11 @@ methods:{
   justify-content: center;
   align-items: center;
   background-color:#FEF5E8 ;
-  min-height: 400px;
-  width: 100%;
+  min-height: 420px;
+  max-width: 100%;
   border-radius: 21px;
-
+  text-align: start;
+  padding: 12px;
 }
 
 .dash-container{
@@ -274,6 +336,7 @@ methods:{
 }
 
 .left{
+  width: 100%;
   text-align: left;
   margin-top: 12px;
   margin-bottom: 12px;
@@ -283,6 +346,14 @@ methods:{
 .left strong{
   color: #D2D5D4;
 
+}
+
+.right{
+  width: 100%;
+  text-align: right;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  color: #7e7e7e;
 }
 
 .blurit{
