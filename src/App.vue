@@ -62,7 +62,7 @@ body{
 
 .input-single{
     outline: none;
-    border-radius: 100rem;
+    border-radius: 6px;
     /* height: 50px; */
     border: none;
     margin-bottom: 21px;
@@ -72,20 +72,42 @@ body{
     text-align: left; 
   transition: 0.4s;   
   background-color: #dadada;
+  max-width: 400px;
+}
+
+.dropdown{
+    outline: none;
+    border-radius: 6px;
+    /* height: 50px; */
+    border: none;
+    margin-bottom: 21px;
+    font-size: large;
+    padding: 12px 20px;
+    text-align: left; 
+  transition: 0.4s;   
+  background-color: #dadada;
+  width: 440px;
+}
+
+.dropdown option{
+  border-radius: 6px;
 }
 
 .input-area{
     outline: none;
-    border-radius: 21px;
-    height: 200px;
+    border-radius: 6px;
+    height: 100px;
     border: none;
     /* margin-bottom: 21px; */
     font-size: large;
     padding: 20px;
-    width: 100%;
+    width: 80%;
     text-align: left; 
   transition: 0.4s;   
   background-color: #dadada;
+  max-width: 400px;
+  margin-bottom: 12px;
+
 }
 
 .btn{

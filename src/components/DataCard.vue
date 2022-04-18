@@ -28,11 +28,12 @@ export default {
 .data-card{
     display: flex;
     flex-flow: column;
-    height: 250px;
+    min-height: 250px;
     /* justify-content: center; */
     background-color: white;
     color: #000;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    /* box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); */
+    border: solid 1px #e2e2e2;
     border-radius: 21px;
     margin-top: 20px;
     cursor: pointer;
