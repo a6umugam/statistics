@@ -21,11 +21,11 @@ body{
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  background-color: #F0F7FF;
   word-spacing: 1px;
   font-size: 16px;
   min-height: 100vh;
 }
+
 
 :root{
   --purple-color: #8855FF;
@@ -65,7 +65,7 @@ body{
     border-radius: 100rem;
     /* height: 50px; */
     border: none;
-    /* margin-bottom: 21px; */
+    margin-bottom: 21px;
     font-size: large;
     padding: 12px 20px;
     width: 80%;

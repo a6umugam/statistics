@@ -6,12 +6,22 @@
 
       <div class="h-box">
         <div class="login-box">
-          <h4>Email</h4>
-          <input class="input-single" type="email" name="email address" id="email-id">
-          <h4>Password</h4>
-          <input class="input-single" type="email" name="email address" id="email-id">
-          <button class="btn" @click="gotoDashboard">Login</button>
-          <!-- <a href="#/">Dashboard</a> -->
+          <form @submit.prevent="login">
+            <h2>Login</h2>
+            <input
+                class="input-single"
+                type="email"
+                placeholder="Email Address"
+                v-model="email"
+            />
+            <input
+                class="input-single"
+                type="password"
+                placeholder="Password"
+                v-model="password"
+            />
+            <button type="submit" class="btn">Login</button>
+        </form>
         </div>
         <div class="logo-box">
           <img src="@/assets/logo-afio.png"/>
@@ -21,13 +31,30 @@
 </template>
 
 <script>
+import firebase from 'firebase/compat/app';
+
 export default {
 
-  methods:{
-    gotoDashboard(){
-      this.$router.push('/dash');
-    }
-  }
+  data() {
+        return {
+            email: '',
+            password: '',
+        };
+    },
+    methods: {
+        login() {
+            firebase
+                .auth()
+                .signInWithEmailAndPassword(this.email, this.password)
+                .then(() => {
+                    alert('Successfully logged in');
+                    this.$router.push('/dash');
+                })
+                .catch(error => {
+                    alert(error.message);
+                });
+        },
+    },
 
 }
 </script>
