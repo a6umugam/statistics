@@ -1,5 +1,8 @@
 <template>
   <div class="data-card">
+      <div class="card-header">
+        <a class="red small" @click="emitDelete(id)"><img src="@/assets/icons/trash.svg" width="30" ></a>
+      </div>
       <h1>{{service}}</h1>
       <div class="capsule">
           <div class="capsule-content">
@@ -20,11 +23,40 @@
 
 <script>
 export default {
-    props: ['service','persons','remarks','date','by']
+    props: ['service','persons','remarks','date','by','id'],
+
+    methods:{
+    emitDelete(params){
+        this.$emit('deleteData',params)
+    },
+    }
+
 }
 </script>
 
 <style>
+.card-header{
+    display: flex;
+    width: 100%;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.card-header a{
+    width: 30px;
+    height: 30px;
+    padding: 6px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.card-header a:hover{
+    background-color: #ff584d;
+    transition: 0.3s;
+}
+
+
 .data-card{
     display: flex;
     flex-flow: column;

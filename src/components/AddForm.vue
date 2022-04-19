@@ -1,25 +1,25 @@
 <template>
     <div class="form-view">
-        <h1 class="intro-text">New Entry <strong>Form</strong> </h1>
-        <p>Service</p>
+        <h1 class="intro-text">Fiche<strong> d'inscription</strong> </h1>
+        <p>Services offerts</p>
         <select class="dropdown" v-model="formData.service">
             <option v-for="srv in services" :value="srv" :key=srv >{{srv}}</option>
         </select>
-        <p>No. Of Persons</p>
+        <p>Nombre de personnes</p>
         <input type="number" class="input-single" v-model="formData.persons">
         <p>Date</p>
         <input type="date" id="date" name="date" class="input-single" v-model="formData.date">
-        <p>Created By</p>
+        <p>Crée par</p>
         <select class="dropdown"  @change="creatorChange" v-model="formData.by">
             <option v-for="per in creators" :value="per" :key=per>{{per}}</option>
         </select>
         <input type="text" class="input-single" placeholder="Please Specify Your Name" v-if="otherField" v-model="formData.by">
-        <p>Comments/Remarks</p>
+        <p>Commentaires</p>
         <textarea name="comments" id="coment" cols="10" rows="5" class="input-area" v-model="formData.remarks"></textarea>
 
         <div class="btn-grp">
-            <a class="ico-btn red" v-on:click="emitClose"> <img src="@/assets/icons/close.svg" width="30" >Cancel</a>
-            <a class="ico-btn grey"  v-on:click="emitSave" > <img src="@/assets/icons/tick.svg" width="30" >Save</a>
+            <a class="ico-btn red" v-on:click="emitClose"> <img src="@/assets/icons/close.svg" width="30" >Annuler</a>
+            <a class="ico-btn grey"  v-on:click="emitSave" > <img src="@/assets/icons/tick.svg" width="30" >Enregistrer</a>
         </div>
 
     </div>

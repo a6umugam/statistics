@@ -15,6 +15,8 @@ async function createWindow() {
   const win = new BrowserWindow({
     width: 1100,
     height: 800,
+    autoHideMenuBar: true,
+    icon: './public/ico.png',
     webPreferences: {
       
       // Use pluginOptions.nodeIntegration, leave this alone

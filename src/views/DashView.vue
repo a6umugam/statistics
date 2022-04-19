@@ -3,27 +3,51 @@
     <div class="tool-bar" v-bind:class="{remrad: norad, blurit:viewMenu}">
       <div class="h-btn-grp">
         <img src="@/assets/logo-afio-mini.png" width="150" class="logo-img"/>
-        <a class="purple big" @click="viewMenu='form'"> <img src="@/assets/icons/plus.svg" width="30"> New Entry</a>
-        <a class="grey big"> <img src="@/assets/icons/calendar.svg" width="30" > Date Range</a>
-        <a class="grey big"> <img src="@/assets/icons/board.svg" width="30" > Services</a>
-        <a class="grey big"> <img src="@/assets/icons/person.svg" width="30" > Created By</a>
+        <a class="purple big" @click="viewMenu='form'"> <img src="@/assets/icons/plus.svg" width="30"> Nouveau</a>
+        <a class="grey big"  @click="pickDateRange = !pickDateRange" > <img src="@/assets/icons/calendar.svg" width="30"> Plage de dates</a>
+        <div class="inner-capsule" v-if="pickDateRange">
+          <p>depuis</p>
+          <input type="date" id="date" name="date" class="input-single" v-model="fromDate" @change="getBlocks">
+          <p>pour</p>
+          <input type="date" id="date" name="date" class="input-single" v-model="toDate" @change="getBlocks">
+        </div>
+        <a class="grey big" @click="pickServices = !pickServices"> <img src="@/assets/icons/board.svg" width="30"  > Services offerts</a>
+
+        <div class="inner-capsule" v-if="pickServices">
+        <p>Services offerts</p>
+        <select class="input-single" v-model="filterService"  @change="getBlocks">
+            <option v-for="srv in services" :value="srv" :key=srv >{{srv}}</option>
+        </select>
+        </div>
+        <a class="grey big"  @click="pickCreator = !pickCreator"> <img src="@/assets/icons/person.svg" width="30"> Crée par</a>
+        <div class="inner-capsule" v-if="pickCreator">
+          <p>nom du créateur</p>
+          <select class="input-single"  @change="getBlocks" v-model="filterCreator">
+              <option v-for="per in creators" :value="per" :key=per>{{per}}</option>
+          </select>
+        </div>
       </div>
       <div class="v-btn-grp">
         <a class="red small" @click="logout"><img src="@/assets/icons/power.svg" width="30" ></a>
-        <a class="grey big"> <img src="@/assets/icons/settings.svg" width="30" >Settings</a>
+        <a class="grey big" @click="clearFilters"> <img src="@/assets/icons/sync.svg" width="30" >effacer les filtres</a>
       </div>
     </div>
     <div class="content-bar" v-bind:class="{blurit: viewMenu}">
-      <h1 class="title left"><strong>Welcome back to </strong> Database  </h1>
+      <h1 class="title left">Bienvenue!</h1>
 
       <div class="chart-box">
-        <h2 class="left">Services Utilization<strong> Data Chart</strong> </h2>
+        <h2 class="left">Tableau de données du <strong>graphique statistique</strong> </h2>
+        <h2 class="left" v-if="fromDate != ''">{{fromDate}} - {{toDate}}</h2>
         <DoughnutChart :chartData="testData"  :options="options" />
-        <p class="right">*Hover on top of colors to know service name</p>
+        <h3 class="left" v-if="!filterService">Nombre de services utilisés: {{usedServicesCount}} </h3>
+        <h3 class="left" v-else>{{filterService}}</h3>
+        <h3 class="left">Total Nombre de personnes: {{totalPersons}} </h3>
+        <!-- <p class="right">*Hover on top of colors to know service name</p> -->
+        <!-- <p class="right">*Chart is based on selected date range</p> -->
       </div>
-      <h1 class="title left">Reports <strong>Section</strong> </h1>
+      <h1 class="title left">Rapports <strong>d'intervention</strong> </h1>
       <div>
-        <DataCard v-for="data in datas" :service="data.service" :persons="data.persons" :remarks="data.remarks" :date="data.date" :by="data.by" :key="data.key"/>
+        <DataCard v-for="data in datas" @deleteData='deleteReport' :id="data.id" :service="data.service" :persons="data.persons" :remarks="data.remarks" :date="data.date" :by="data.by" :key="data.key"/>
       </div>
     </div>
 
@@ -56,7 +80,15 @@ export default {
       datas:[],
       lastVisible:'',
       hasScrolledToBottom: false,
-
+      usedServicesCount:0,
+      totalPersons:0,
+      fromDate:"",
+      toDate:"",
+      filterService:'',
+      filterCreator:"",
+      pickDateRange:false,
+      pickServices:false,
+      pickCreator:false,
       options: ({
       responsive: true,
       plugins: {
@@ -70,7 +102,35 @@ export default {
         },
       },
     }),
-
+    creators:['Julie Koskinen',
+                    'Michelle Makoko',
+                    'Others'],
+    services:['Accompagnement Physique. Déplacement',
+                    'Aide alimentaire',
+                    'Aide matérielle : meubles',
+                    'Aide Juridique, avocats, centre de justice de proximité',
+                    'Don de l’AFIO (cartes cadeaux pour épicerie, vêtements, jouets,manteaux, bottes)',
+                    'Interprétariat, Traduction',
+                    'Études',
+                    'Besoin et soutien pour la recherche des Garderie',
+                    'Immigration, parrainage, visa, RP, permis de travail et études',
+                    'Citoyenneté',
+                    'Socialisation, Réseautage, besoin de contacts',
+                    'Logement, Hébergement',
+                    'Opération bancaires',
+                    'Emploi',
+                    'Santé',
+                    'Informations sur les services et programmes gouvernementaux',
+                    'Formulaires',
+                    'Lecture et Rédaction lettres et de documents',
+                    'Soutien psychosocial',
+                    'Soutien en situation de violence conjugale',
+                    'Écoute, informations et références',
+                    'Interventions auprès des autres services',
+                    'Francisation',
+                    'PDI individuelle',
+                    'Suivis personnalisés',
+                    'Placement d’enfants en garderie'],
       testData : {
       labels: ['Accompagnement Physique. Déplacement',
                     'Aide alimentaire',
@@ -100,7 +160,7 @@ export default {
                     'Placement d’enfants en garderie'],
       datasets: [
         {
-          data: [30, 40, 60, 70, 5,30, 40, 60, 70, 5,30, 40, 60, 70, 5,30, 40, 60, 70, 5,30, 40, 60, 70, 5,6],
+          data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
           backgroundColor: ['#5D8AA8', '#F0F8FF', '#E32636', '#E52B50', '#FFBF00','#A4C639', '#FBCEB1', '#7FFFD4', '#B2BEB5', '#FF9966',
                             '#007FFF', '#89CFF0', '#DEB887', '#E97451', '#536878','#77CEFF', '#0079AF', '#123E6B', '#97B0C4', '#A5C8ED',
                             '#F4C2C2', '#DE5D83', '#CC5500', '#8A3324', '#A5C8ED','#FFEF00'],
@@ -123,6 +183,7 @@ components:{
   },
   created(){
     this.getBlocks()
+    this.toDate = new Date().toISOString().slice(0, -14);
   },
 
 methods:{
@@ -148,23 +209,79 @@ methods:{
   },
 
   async getBlocks(){
-        var snapshot = await firebase.firestore()
-          .collection('datas')
-          .orderBy("timestamp", "desc")
-          .limit(8)
-          .get()
-      this.datas = snapshot.docs.map((doc) => doc.data())
-      this.datas.id = snapshot.docs.map((doc) => doc.id)
-      this.lastVisible = snapshot.docs[snapshot.docs.length-1];
-      var i
-      for (i = 0; i < this.datas.length; i++) {
-        this.datas[i].id = this.datas.id[i]
+    var start = firebase.firestore.Timestamp.fromDate(new Date(this.fromDate));
+    var end = firebase.firestore.Timestamp.fromDate(new Date(this.toDate));
+
+    var snapshot = await firebase.firestore().collection('datas')
+    // Singles
+    if(this.fromDate != "" && this.filterService == "" && this.filterCreator == ''){
+      console.log('wokring on date')
+      snapshot = await firebase.firestore().collection('datas').where('timestamp', '>', start)
+              .where('timestamp', '<', end).orderBy("timestamp", "desc").get()
+    }else if(this.filterService != "" && this.fromDate == "" && this.filterCreator==""){
+      snapshot = await firebase.firestore().collection('datas').where('service', '==',this.filterService).orderBy("timestamp", "desc").get()
+    }else if(this.filterCreator != "" && this.fromDate == "" && this.fromDate==""){
+      if(this.filterCreator == "Others" ){
+        snapshot = await firebase.firestore().collection('datas').where('others', '==',true).orderBy("timestamp", "desc").get()
+      }else{
+        snapshot = await firebase.firestore().collection('datas').where('by', '==',this.filterCreator).orderBy("timestamp", "desc").get()
       }
-      console.log(this.datas)
+    }
+    // Doubles
+    else if(this.fromDate != "" && this.filterService != "" && this.filterCreator == ''){
+      snapshot = await firebase.firestore().collection('datas').where('timestamp', '>', start)
+              .where('timestamp', '<', end)
+              .where('service', '==',this.filterService)
+              .orderBy("timestamp", "desc").get()
+    }
+
+    else if(this.fromDate != "" && this.filterService == "" && this.filterCreator != ''){
+      snapshot = await firebase.firestore().collection('datas').where('timestamp', '>', start)
+              .where('timestamp', '<', end)
+              .where('by', '==',this.filterCreator)
+              .orderBy("timestamp", "desc").get()
+    }
+
+    else if(this.fromDate == "" && this.filterService != "" && this.filterCreator != ''){
+      snapshot = await firebase.firestore().collection('datas').where('service', '==',this.filterService)
+              .where('by', '==',this.filterCreator)
+              .orderBy("timestamp", "desc").get()
+    }
+
+    // Tripples
+    else if(this.fromDate != "" && this.filterService != "" && this.filterCreator != ''){
+      snapshot = await firebase.firestore().collection('datas').where('timestamp', '>', start)
+              .where('timestamp', '<', end)
+              .where('service', '==',this.filterService)
+              .where('by', '==',this.filterCreator)
+              .orderBy("timestamp", "desc").get()
+    }
+
+    else{
+      snapshot = await firebase.firestore()
+      .collection('datas')
+      .orderBy("timestamp", "desc")
+      .limit(8)
+      .get()
+    }
+
+    this.datas = snapshot.docs.map((doc) => doc.data())
+    this.datas.id = snapshot.docs.map((doc) => doc.id)
+    this.lastVisible = snapshot.docs[snapshot.docs.length-1];
+    var i
+    for (i = 0; i < this.datas.length; i++) {
+      this.datas[i].id = this.datas.id[i]
+    }
+    console.log(this.datas)
+    this.analyzeData()
     },
 
   saveData(data){
     console.log(data)
+    var othr = false
+    if(data.by != this.creators[0] && data.by != this.creators[1]  ){
+      othr = true
+    }
     const t = firebase.firestore.Timestamp.fromDate(new Date());
     firebase.firestore().collection("datas").add({
       service: data.service,
@@ -173,6 +290,7 @@ methods:{
       by: data.by,
       remarks: data.remarks,
       timestamp: t,
+      others: othr
       })
       .then((docRef) => {
           console.log("Document written with ID: ", docRef.id);
@@ -189,7 +307,7 @@ methods:{
                 .auth()
                 .signOut()
                 .then(() => {
-                    alert('Successfully logged out');
+                    alert('Déconnecté avec succès');
                     this.$router.push('/');
                 })
                 .catch(error => {
@@ -197,6 +315,50 @@ methods:{
                     this.$router.push('/');
                 });
         },
+
+    analyzeData(){
+      console.log(this.testData.labels)
+      this.testData.datasets[0].data = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+      this.usedServicesCount = 0
+      this.totalPersons = 0
+
+      for(let d = 0; d < this.datas.length; d++){
+        console.log(this.datas[d].service)
+        for(let i = 0; i < this.testData.labels.length; i++){
+          if(this.testData.labels[i] == this.datas[d].service){
+            this.testData.datasets[0].data[i] += this.datas[d].persons
+            console.log(this.testData.datasets[0].data[i])
+            // print(this.datas[d].service)
+          }
+        }
+      }
+
+      for(let j =0; j < this.testData.datasets[0].data.length; j++){
+        if(this.testData.datasets[0].data[j] != 0){
+          this.usedServicesCount += 1
+          this.totalPersons += this.testData.datasets[0].data[j]
+        }
+      }
+      console.log(this.usedServicesCount)
+    },
+
+    deleteReport(id){
+      console.log(id)
+      firebase.firestore().collection("datas").doc(id).delete().then(() => {
+          console.log("Document successfully deleted!");
+          this.getBlocks()
+      }).catch((error) => {
+          console.error("Error removing document: ", error);
+      });
+
+    },
+
+    clearFilters(){
+      this.filterService =""
+      this.filterCreator = ""
+      this.fromDate = ""
+      this.getBlocks()
+    }
 
 }
 }
@@ -280,6 +442,21 @@ methods:{
   padding: 10px;
   font-size: larger;
   cursor: pointer;
+}
+
+.inner-capsule{
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  margin-bottom: 12px;
+  border-radius: 12px;
+  padding: 10px;
+  font-size: larger;
+  cursor: pointer;
+  background-color: #eaf2ff;
+  border: solid 1px #f1f1f1;
+  transition: 0.3s;
+  width: 90%;
 }
 
 .big img{

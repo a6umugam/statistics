@@ -2,25 +2,25 @@
   <div class="login-container">
       <h1 >Bienvenue sur</h1>
       <h1 class="title">Statistiques d'intervention</h1>
-      <h2 class="subtitle">Please Login to continue</h2>
+      <h2 class="subtitle">Veuillez ouvrir une session</h2>
 
       <div class="h-box">
         <div class="login-box">
           <form @submit.prevent="login">
-            <h2>Login</h2>
+            <h2>Se connecter</h2>
             <input
                 class="input-single"
                 type="email"
-                placeholder="Email Address"
+                placeholder="Courriel"
                 v-model="email"
             />
             <input
                 class="input-single"
                 type="password"
-                placeholder="Password"
+                placeholder="Mot de passe"
                 v-model="password"
             />
-            <button type="submit" class="btn">Login</button>
+            <button type="submit" class="btn">Valider</button>
         </form>
         </div>
         <div class="logo-box">
@@ -47,7 +47,7 @@ export default {
                 .auth()
                 .signInWithEmailAndPassword(this.email, this.password)
                 .then(() => {
-                    alert('Successfully logged in');
+                    // alert('Successfully logged in');
                     this.$router.push('/dash');
                 })
                 .catch(error => {
