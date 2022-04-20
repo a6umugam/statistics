@@ -139,7 +139,7 @@ methods:{
 }
 
 .intro-text strong{
-  color: #D2D5D4;
+  color: #2A2A2A;
 }
 
 </style>

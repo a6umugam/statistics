@@ -4,6 +4,15 @@
   </div>
 </template>
 
+<script>
+
+export default ({
+  created(){
+    this.$router.push('/');
+  }
+})
+</script>
+
 
 <style>
 /* html, */
@@ -84,6 +93,10 @@ input, button, textarea, :focus {
   transition: 0.4s;   
   background-color: #dadada;
   max-width: 400px;
+}
+
+.nom{
+  margin-bottom: 0px;
 }
 
 .dropdown{

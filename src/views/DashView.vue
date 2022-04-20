@@ -6,23 +6,23 @@
         <a class="purple big" @click="viewMenu='form'"> <img src="@/assets/icons/plus.svg" width="30"> Nouveau</a>
         <a class="grey big"  @click="pickDateRange = !pickDateRange" > <img src="@/assets/icons/calendar.svg" width="30"> Plage de dates</a>
         <div class="inner-capsule" v-if="pickDateRange">
-          <p>depuis</p>
+          <!-- <p>depuis</p> -->
           <input type="date" id="date" name="date" class="input-single" v-model="fromDate" @change="getBlocks">
-          <p>pour</p>
-          <input type="date" id="date" name="date" class="input-single" v-model="toDate" @change="getBlocks">
+          <!-- <p>pour</p> -->
+          <input type="date" id="date" name="date" class="input-single nom" v-model="toDate" @change="getBlocks">
         </div>
         <a class="grey big" @click="pickServices = !pickServices"> <img src="@/assets/icons/board.svg" width="30"  > Services offerts</a>
 
         <div class="inner-capsule" v-if="pickServices">
-        <p>Services offerts</p>
-        <select class="input-single" v-model="filterService"  @change="getBlocks">
+        <!-- <p>Services offerts</p> -->
+        <select class="input-single nom" v-model="filterService"  @change="getBlocks">
             <option v-for="srv in services" :value="srv" :key=srv >{{srv}}</option>
         </select>
         </div>
         <a class="grey big"  @click="pickCreator = !pickCreator"> <img src="@/assets/icons/person.svg" width="30"> Crée par</a>
         <div class="inner-capsule" v-if="pickCreator">
-          <p>nom du créateur</p>
-          <select class="input-single"  @change="getBlocks" v-model="filterCreator">
+          <!-- <p>nom du créateur</p> -->
+          <select class="input-single nom"  @change="getBlocks" v-model="filterCreator">
               <option v-for="per in creators" :value="per" :key=per>{{per}}</option>
           </select>
         </div>
@@ -37,11 +37,12 @@
 
       <div class="chart-box">
         <h2 class="left">Tableau de données du <strong>graphique statistique</strong> </h2>
+        <h1 class="left">Graphique en secteurs</h1>
         <h2 class="left" v-if="fromDate != ''">{{fromDate}} - {{toDate}}</h2>
         <DoughnutChart :chartData="testData"  :options="options" />
         <h3 class="left" v-if="!filterService">Nombre de services utilisés: {{usedServicesCount}} </h3>
         <h3 class="left" v-else>{{filterService}}</h3>
-        <h3 class="left">Total Nombre de personnes: {{totalPersons}} </h3>
+        <h3 class="left">Nombre de personnes: {{totalPersons}} </h3>
         <!-- <p class="right">*Hover on top of colors to know service name</p> -->
         <!-- <p class="right">*Chart is based on selected date range</p> -->
       </div>
@@ -415,6 +416,12 @@ methods:{
   z-index: 9;
   top: 0;
   position: sticky;
+  max-height: 90vh;
+  overflow: scroll;
+}
+
+.tool-bar::-webkit-scrollbar{
+  display: none;
 }
 .remrad{
     border-radius: 0px 0px 21px 21px;
@@ -521,7 +528,7 @@ methods:{
 }
 
 .left strong{
-  color: #D2D5D4;
+  color: #2A2A2A;
 
 }
 
