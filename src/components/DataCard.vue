@@ -3,14 +3,16 @@
       <div class="card-header">
         <a class="red small" @click="emitDelete(id)"><img src="@/assets/icons/trash.svg" width="30" ></a>
       </div>
-      <h1>{{service}}</h1>
+      <div class="title-srv">
+          <h2 v-for="srv in service" :key="srv">{{srv}}</h2>
+      </div>
       <div class="capsule">
           <div class="capsule-content">
-              <p>Number of persons</p>
-                <h1 class="value-view">{{persons}}</h1>
+              <p>REF# / NOM</p>
+                <h1 class="value-view">{{refn}}</h1>
           </div>
           <div class="capsule-content">
-              <p>Remarks</p>
+              <p>Commentaires</p>
                 <h4 class="value-view">{{remarks}}</h4>
           </div>
       </div>
@@ -23,7 +25,7 @@
 
 <script>
 export default {
-    props: ['service','persons','remarks','date','by','id'],
+    props: ['service','persons','remarks','date','by','id','refn'],
 
     methods:{
     emitDelete(params){
@@ -35,6 +37,19 @@ export default {
 </script>
 
 <style>
+.title-srv{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.title-srv h2{
+    padding: 10px;
+    margin: 5px;
+    background-color: #f1f1f1;
+    border-radius: 16px;
+}
 .card-header{
     display: flex;
     width: 100%;
@@ -58,6 +73,7 @@ export default {
 
 
 .data-card{
+    cursor: pointer;
     display: flex;
     flex-flow: column;
     min-height: 250px;
@@ -68,7 +84,6 @@ export default {
     border: solid 1px #e2e2e2;
     border-radius: 21px;
     margin-top: 20px;
-    cursor: pointer;
     transition: 0.3s;
     padding: 12px;
 }

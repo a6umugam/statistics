@@ -111,6 +111,7 @@ input, button, textarea, :focus {
   transition: 0.4s;   
   background-color: #dadada;
   width: 440px;
+  max-height: 200px;
 }
 
 .dropdown option{
@@ -153,6 +154,25 @@ input, button, textarea, :focus {
 .btn:hover{
   transition: 0.3s;
   transform: translateY(-5px);
+}
+
+::-webkit-scrollbar{
+    width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey; 
+  border-radius: 10px;
+}
+ 
+ ::-webkit-scrollbar-thumb {
+  background: #ff584d; 
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #ff2111; 
 }
 
 

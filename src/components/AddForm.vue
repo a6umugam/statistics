@@ -2,11 +2,23 @@
     <div class="form-view">
         <h1 class="intro-text">Fiche<strong> d'inscription</strong> </h1>
         <p>Services offerts</p>
-        <select class="dropdown" v-model="formData.service">
+        
+        <div class="check-list">
+            <ul class="check-list-content">
+                <li v-for="srv in services" :key=srv >
+                    <input :value="srv" :name="srv" type="checkbox" v-model="formData.service" />
+                    <label :for="srv">{{srv}}</label>
+                </li>
+            </ul>
+            <p v-if="formData.service[0]">{{formData.service}}</p>
+            <p> </p>
+        </div>
+
+        <!-- <select multiple class="dropdown" v-model="formData.service">
             <option v-for="srv in services" :value="srv" :key=srv >{{srv}}</option>
-        </select>
-        <p>Nombre de personnes</p>
-        <input type="number" class="input-single" v-model="formData.persons">
+        </select> -->
+        <p>REF# / NOM</p>
+        <input type="number" class="input-single" v-model="formData.ref">
         <p>Date</p>
         <input type="date" id="date" name="date" class="input-single" v-model="formData.date">
         <p>Crée par</p>
@@ -29,37 +41,40 @@
 export default {
     data(){
         return{
-            services:['Accompagnement Physique. Déplacement',
-                    'Aide alimentaire',
-                    'Aide matérielle : meubles',
-                    'Aide Juridique, avocats, centre de justice de proximité',
-                    'Don de l’AFIO (cartes cadeaux pour épicerie, vêtements, jouets,manteaux, bottes)',
-                    'Interprétariat, Traduction',
-                    'Études',
-                    'Besoin et soutien pour la recherche des Garderie',
-                    'Immigration, parrainage, visa, RP, permis de travail et études',
-                    'Citoyenneté',
-                    'Socialisation, Réseautage, besoin de contacts',
-                    'Logement, Hébergement',
-                    'Opération bancaires',
-                    'Emploi',
-                    'Santé',
-                    'Informations sur les services et programmes gouvernementaux',
-                    'Formulaires',
-                    'Lecture et Rédaction lettres et de documents',
-                    'Soutien psychosocial',
-                    'Soutien en situation de violence conjugale',
-                    'Écoute, informations et références',
-                    'Interventions auprès des autres services',
-                    'Francisation',
-                    'PDI individuelle',
-                    'Suivis personnalisés',
-                    'Placement d’enfants en garderie'],
+            services:['Accompagnement Physique',
+                        'Visite à domicile',
+                        'Aide alimentaire',
+                        'Aide matérielle : meubles,',
+                        'Aide Juridique',
+                        'Avocats, centre de justice de proximité',
+                        'Don de l’AFIO (cartes cadeaux pour épicerie, vêtements, jouets, manteaux,bottes)',
+                        'Interprétariat, Traduction',
+                        'Études',
+                        'Immigration',
+                        'Parrainage',
+                        'Demande de visa',
+                        'Résidente Permanent',
+                        'Permis de travail',
+                        'Permis d’étude',
+                        'Citoyenneté',
+                        'Soutien pour la recherche d’une garderie, en milieu familial',
+                        'Placement des enfants en garderie',
+                        'Socialisation, Réseautage, besoin de contacts',
+                        'Logement',
+                        'Hébergement',
+                        'Emploi',
+                        'Santé',
+                        'Aide techniques (lettre, formulaire et documentation)',
+                        'Soutien psychosocial',
+                        'Soutien en situation de violence conjugale',
+                        'Interventions auprès des autres services',
+                        'Francisation',
+                        'PDI individuelle'],
             creators:['Julie Koskinen',
                     'Michelle Makoko',
                     'Others'],
             otherField: false,
-            formData:{service:'',persons:0,date:'',by:'',remarks:''},
+            formData:{service:[],persons:0,date:'',by:'',remarks:'',ref:''},
         }
     },
 methods:{
@@ -84,14 +99,66 @@ methods:{
 </script>
 
 <style>
+
+
+
+.check-list {
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+
+.check-list-content {
+  max-height: 200px;
+
+  outline: none;
+    border-radius: 6px;
+    /* height: 50px; */
+    border: none;
+    /* margin-bottom: 21px; */
+    font-size: large;
+    padding: 12px 20px;
+    text-align: left; 
+  transition: 0.4s;   
+  width: 440px;
+  max-height: 200px;
+  background-color: #dadada;
+  overflow-y: scroll;
+}
+
+
+
+.check-list-content li{
+    list-style: none;
+    background-color: #eeeeee;
+    margin-bottom: 5px;
+    border-radius: 6px;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+}
+
+input[type=checkbox] {min-width:20px; min-height:20px;margin-right: 10px;}
+
+
 .form-view{
     min-width: 500px;
+    height: 90vh;
     width: 600px;
     background-color: white;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     border-radius: 21px;
     padding: 12px;
+    overflow-y: scroll;
+    max-height: 900px;
 }
+.form-view::-webkit-scrollbar{
+  display: none;
+}
+
 .form-view p{
     font-size: large;
     margin: 0px;

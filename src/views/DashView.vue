@@ -4,6 +4,11 @@
       <div class="h-btn-grp">
         <img src="@/assets/logo-afio-mini.png" width="150" class="logo-img"/>
         <a class="purple big" @click="viewMenu='form'"> <img src="@/assets/icons/plus.svg" width="30"> Nouveau</a>
+        <a class="grey big" @click="pickRef = !pickRef"> <img src="@/assets/icons/hash.svg" width="30"  >  REF / NOM</a>
+        <div class="inner-capsule" v-if="pickRef">
+          <input type="number" class="input-single nom" v-model="filterRef" @change="getBlocks">
+        </div>
+
         <a class="grey big"  @click="pickDateRange = !pickDateRange" > <img src="@/assets/icons/calendar.svg" width="30"> Plage de dates</a>
         <div class="inner-capsule" v-if="pickDateRange">
           <!-- <p>depuis</p> -->
@@ -13,12 +18,23 @@
         </div>
         <a class="grey big" @click="pickServices = !pickServices"> <img src="@/assets/icons/board.svg" width="30"  > Services offerts</a>
 
-        <div class="inner-capsule" v-if="pickServices">
-        <!-- <p>Services offerts</p> -->
-        <select class="input-single nom" v-model="filterService"  @change="getBlocks">
+        <!-- <div class="inner-capsule" v-if="pickServices">
+        <p>Services offerts</p>
+        <select  class="input-single nom" v-model="filterService"  @change="getBlocks">
             <option v-for="srv in services" :value="srv" :key=srv >{{srv}}</option>
         </select>
+        </div> -->
+
+        <div class="f-check-list" v-if="pickServices">
+            <ul class="f-check-list-content">
+                <li v-for="srv in services" :key=srv >
+                    <input :value="srv" :name="srv" type="checkbox" v-model="filterServiceList"  @change="getBlocks"/>
+                    <label :for="srv">{{srv}}</label>
+                </li>
+            </ul>
+
         </div>
+
         <a class="grey big"  @click="pickCreator = !pickCreator"> <img src="@/assets/icons/person.svg" width="30"> Crée par</a>
         <div class="inner-capsule" v-if="pickCreator">
           <!-- <p>nom du créateur</p> -->
@@ -40,15 +56,17 @@
         <h1 class="left">Graphique en secteurs</h1>
         <h2 class="left" v-if="fromDate != ''">{{fromDate}} - {{toDate}}</h2>
         <DoughnutChart :chartData="testData"  :options="options" />
-        <h3 class="left" v-if="!filterService">Nombre de services utilisés: {{usedServicesCount}} </h3>
-        <h3 class="left" v-else>{{filterService}}</h3>
-        <h3 class="left">Nombre de personnes: {{totalPersons}} </h3>
+        <h3 class="left" v-if="filterServiceList.length == 0">Nombre de services utilisés: {{usedServicesCount}} </h3>
+        <div class="title-srv" v-else>
+          <h3 v-for="srv in filterServiceList" :key="srv">{{srv}}</h3>
+        </div>
+        <!-- <h3 class="left">Nombre de personnes: {{totalPersons}} </h3> -->
         <!-- <p class="right">*Hover on top of colors to know service name</p> -->
         <!-- <p class="right">*Chart is based on selected date range</p> -->
       </div>
       <h1 class="title left">Rapports <strong>d'intervention</strong> </h1>
       <div>
-        <DataCard v-for="data in datas" @deleteData='deleteReport' :id="data.id" :service="data.service" :persons="data.persons" :remarks="data.remarks" :date="data.date" :by="data.by" :key="data.key"/>
+        <DataCard v-for="data in datas" @deleteData='deleteReport' :id="data.id" :refn="data.ref" :service="data.service" :persons="data.persons" :remarks="data.remarks" :date="data.date" :by="data.by" :key="data.key"/>
       </div>
     </div>
 
@@ -86,10 +104,13 @@ export default {
       fromDate:"",
       toDate:"",
       filterService:'',
+      filterServiceList:[],
+      filterRef:0,
       filterCreator:"",
       pickDateRange:false,
       pickServices:false,
       pickCreator:false,
+      pickRef:false,
       options: ({
       responsive: true,
       plugins: {
@@ -106,65 +127,71 @@ export default {
     creators:['Julie Koskinen',
                     'Michelle Makoko',
                     'Others'],
-    services:['Accompagnement Physique. Déplacement',
-                    'Aide alimentaire',
-                    'Aide matérielle : meubles',
-                    'Aide Juridique, avocats, centre de justice de proximité',
-                    'Don de l’AFIO (cartes cadeaux pour épicerie, vêtements, jouets,manteaux, bottes)',
-                    'Interprétariat, Traduction',
-                    'Études',
-                    'Besoin et soutien pour la recherche des Garderie',
-                    'Immigration, parrainage, visa, RP, permis de travail et études',
-                    'Citoyenneté',
-                    'Socialisation, Réseautage, besoin de contacts',
-                    'Logement, Hébergement',
-                    'Opération bancaires',
-                    'Emploi',
-                    'Santé',
-                    'Informations sur les services et programmes gouvernementaux',
-                    'Formulaires',
-                    'Lecture et Rédaction lettres et de documents',
-                    'Soutien psychosocial',
-                    'Soutien en situation de violence conjugale',
-                    'Écoute, informations et références',
-                    'Interventions auprès des autres services',
-                    'Francisation',
-                    'PDI individuelle',
-                    'Suivis personnalisés',
-                    'Placement d’enfants en garderie'],
+    services:['Accompagnement Physique',
+                'Visite à domicile',
+                'Aide alimentaire',
+                'Aide matérielle : meubles,',
+                'Aide Juridique',
+                'Avocats, centre de justice de proximité',
+                'Don de l’AFIO (cartes cadeaux pour épicerie, vêtements, jouets, manteaux,bottes)',
+                'Interprétariat, Traduction',
+                'Études',
+                'Immigration',
+                'Parrainage',
+                'Demande de visa',
+                'Résidente Permanent',
+                'Permis de travail',
+                'Permis d’étude',
+                'Citoyenneté',
+                'Soutien pour la recherche d’une garderie, en milieu familial',
+                'Placement des enfants en garderie',
+                'Socialisation, Réseautage, besoin de contacts',
+                'Logement',
+                'Hébergement',
+                'Emploi',
+                'Santé',
+                'Aide techniques (lettre, formulaire et documentation)',
+                'Soutien psychosocial',
+                'Soutien en situation de violence conjugale',
+                'Interventions auprès des autres services',
+                'Francisation',
+                'PDI individuelle'],
       testData : {
-      labels: ['Accompagnement Physique. Déplacement',
-                    'Aide alimentaire',
-                    'Aide matérielle : meubles',
-                    'Aide Juridique, avocats, centre de justice de proximité',
-                    'Don de l’AFIO (cartes cadeaux pour épicerie, vêtements, jouets,manteaux, bottes)',
-                    'Interprétariat, Traduction',
-                    'Études',
-                    'Besoin et soutien pour la recherche des Garderie',
-                    'Immigration, parrainage, visa, RP, permis de travail et études',
-                    'Citoyenneté',
-                    'Socialisation, Réseautage, besoin de contacts',
-                    'Logement, Hébergement',
-                    'Opération bancaires',
-                    'Emploi',
-                    'Santé',
-                    'Informations sur les services et programmes gouvernementaux',
-                    'Formulaires',
-                    'Lecture et Rédaction lettres et de documents',
-                    'Soutien psychosocial',
-                    'Soutien en situation de violence conjugale',
-                    'Écoute, informations et références',
-                    'Interventions auprès des autres services',
-                    'Francisation',
-                    'PDI individuelle',
-                    'Suivis personnalisés',
-                    'Placement d’enfants en garderie'],
+      labels: ['Accompagnement Physique',
+                'Visite à domicile',
+                'Aide alimentaire',
+                'Aide matérielle : meubles,',
+                'Aide Juridique',
+                'Avocats, centre de justice de proximité',
+                'Don de l’AFIO (cartes cadeaux pour épicerie, vêtements, jouets, manteaux,bottes)',
+                'Interprétariat, Traduction',
+                'Études',
+                'Immigration',
+                'Parrainage',
+                'Demande de visa',
+                'Résidente Permanent',
+                'Permis de travail',
+                'Permis d’étude',
+                'Citoyenneté',
+                'Soutien pour la recherche d’une garderie, en milieu familial',
+                'Placement des enfants en garderie',
+                'Socialisation, Réseautage, besoin de contacts',
+                'Logement',
+                'Hébergement',
+                'Emploi',
+                'Santé',
+                'Aide techniques (lettre, formulaire et documentation)',
+                'Soutien psychosocial',
+                'Soutien en situation de violence conjugale',
+                'Interventions auprès des autres services',
+                'Francisation',
+                'PDI individuelle'],
       datasets: [
         {
-          data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+          data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
           backgroundColor: ['#5D8AA8', '#F0F8FF', '#E32636', '#E52B50', '#FFBF00','#A4C639', '#FBCEB1', '#7FFFD4', '#B2BEB5', '#FF9966',
                             '#007FFF', '#89CFF0', '#DEB887', '#E97451', '#536878','#77CEFF', '#0079AF', '#123E6B', '#97B0C4', '#A5C8ED',
-                            '#F4C2C2', '#DE5D83', '#CC5500', '#8A3324', '#A5C8ED','#FFEF00'],
+                            '#F4C2C2', '#DE5D83', '#CC5500', '#8A3324', '#A5C8ED','#FFEF00','#A4C639', '#FBCEB1', '#7FFFD4',],
         },
       ],
     }
@@ -215,46 +242,115 @@ methods:{
 
     var snapshot = await firebase.firestore().collection('datas')
     // Singles
-    if(this.fromDate != "" && this.filterService == "" && this.filterCreator == ''){
+    if(this.fromDate != "" && this.filterServiceList.length == 0 && this.filterCreator == '' && this.filterRef==0){
       console.log('wokring on date')
       snapshot = await firebase.firestore().collection('datas').where('timestamp', '>', start)
               .where('timestamp', '<', end).orderBy("timestamp", "desc").get()
-    }else if(this.filterService != "" && this.fromDate == "" && this.filterCreator==""){
-      snapshot = await firebase.firestore().collection('datas').where('service', '==',this.filterService).orderBy("timestamp", "desc").get()
-    }else if(this.filterCreator != "" && this.fromDate == "" && this.fromDate==""){
+    }else if(this.filterServiceList.length > 0 && this.fromDate == "" && this.filterCreator=="" && this.filterRef==0){
+      snapshot = await firebase.firestore().collection('datas').where('service', 'array-contains-any',this.filterServiceList).orderBy("timestamp", "desc").get()
+    }else if(this.filterCreator != "" && this.fromDate == "" && this.filterServiceList.length == 0 && this.filterRef==0){
       if(this.filterCreator == "Others" ){
         snapshot = await firebase.firestore().collection('datas').where('others', '==',true).orderBy("timestamp", "desc").get()
       }else{
         snapshot = await firebase.firestore().collection('datas').where('by', '==',this.filterCreator).orderBy("timestamp", "desc").get()
       }
+    }else if(this.filterRef != 0 &&this.filterCreator == "" && this.fromDate == "" && this.filterServiceList.length == 0){
+      snapshot = await firebase.firestore().collection('datas').where('ref', '==',this.filterRef).orderBy("timestamp", "desc").get()
     }
+
     // Doubles
-    else if(this.fromDate != "" && this.filterService != "" && this.filterCreator == ''){
+    // date and services
+    else if(this.fromDate != "" && this.filterServiceList.length > 0 && this.filterCreator == '' && this.filterRef==0){
       snapshot = await firebase.firestore().collection('datas').where('timestamp', '>', start)
               .where('timestamp', '<', end)
-              .where('service', '==',this.filterService)
+              .where('service', 'array-contains-any',this.filterServiceList)
               .orderBy("timestamp", "desc").get()
     }
 
-    else if(this.fromDate != "" && this.filterService == "" && this.filterCreator != ''){
+    // date and creator
+    else if(this.fromDate != "" && this.filterServiceList.length == 0 && this.filterCreator != '' && this.filterRef==0){
       snapshot = await firebase.firestore().collection('datas').where('timestamp', '>', start)
               .where('timestamp', '<', end)
               .where('by', '==',this.filterCreator)
               .orderBy("timestamp", "desc").get()
     }
 
-    else if(this.fromDate == "" && this.filterService != "" && this.filterCreator != ''){
-      snapshot = await firebase.firestore().collection('datas').where('service', '==',this.filterService)
+    // services and creator
+    else if(this.fromDate == "" && this.filterServiceList.length > 0 && this.filterCreator != '' && this.filterRef==0){
+      snapshot = await firebase.firestore().collection('datas').where('service', 'array-contains-any',this.filterServiceList)
+              .where('by', '==',this.filterCreator)
+              .orderBy("timestamp", "desc").get()
+    }
+
+    // date and ref
+    else if(this.fromDate != "" && this.filterServiceList.length == 0 && this.filterCreator == '' && this.filterRef != 0){
+      snapshot = await firebase.firestore().collection('datas')
+              .where('timestamp', '>', start)
+              .where('timestamp', '<', end)
+              .where('ref', '==',this.filterRef)
+              .orderBy("timestamp", "desc").get()
+    }
+
+    // services and ref
+    else if(this.fromDate == "" && this.filterServiceList.length > 0 && this.filterCreator == '' && this.filterRef != 0){
+      snapshot = await firebase.firestore().collection('datas')
+              .where('ref', '==',this.filterRef)
+              .where('service', 'array-contains-any',this.filterServiceList)
+              .orderBy("timestamp", "desc").get()
+    }
+
+    // creator and ref
+    else if(this.fromDate == "" && this.filterServiceList.length == 0 && this.filterCreator != '' && this.filterRef != 0){
+      snapshot = await firebase.firestore().collection('datas')
+              .where('ref', '==',this.filterRef)
               .where('by', '==',this.filterCreator)
               .orderBy("timestamp", "desc").get()
     }
 
     // Tripples
-    else if(this.fromDate != "" && this.filterService != "" && this.filterCreator != ''){
+    // No Ref
+    else if(this.fromDate != "" && this.filterServiceList.length > 0 && this.filterCreator != '' && this.filterRef == 0){
       snapshot = await firebase.firestore().collection('datas').where('timestamp', '>', start)
               .where('timestamp', '<', end)
-              .where('service', '==',this.filterService)
+              .where('service', 'array-contains-any',this.filterServiceList)
               .where('by', '==',this.filterCreator)
+              .orderBy("timestamp", "desc").get()
+    }
+
+    // No date
+    else if(this.fromDate == "" && this.filterServiceList.length > 0 && this.filterCreator != '' && this.filterRef != 0){
+      snapshot = await firebase.firestore().collection('datas')
+              .where('ref', '==',this.filterRef)
+              .where('service', 'array-contains-any',this.filterServiceList)
+              .where('by', '==',this.filterCreator)
+              .orderBy("timestamp", "desc").get()
+    }
+
+    // No service
+    else if(this.fromDate != "" && this.filterServiceList.length == 0 && this.filterCreator != '' && this.filterRef != 0){
+      snapshot = await firebase.firestore().collection('datas').where('timestamp', '>', start)
+              .where('timestamp', '<', end)
+              .where('ref', '==',this.filterRef)
+              .where('by', '==',this.filterCreator)
+              .orderBy("timestamp", "desc").get()
+    }
+
+    // No creator
+    else if(this.fromDate != "" && this.filterServiceList.length > 0 && this.filterCreator == '' && this.filterRef != 0){
+      snapshot = await firebase.firestore().collection('datas').where('timestamp', '>', start)
+              .where('timestamp', '<', end)
+              .where('service', 'array-contains-any',this.filterServiceList)
+              .where('ref', '==',this.filterRef)
+              .orderBy("timestamp", "desc").get()
+    }
+
+    // Fours
+    else if(this.fromDate != "" && this.filterServiceList.length > 0 && this.filterCreator != '' && this.filterRef != 0){
+      snapshot = await firebase.firestore().collection('datas').where('timestamp', '>', start)
+              .where('timestamp', '<', end)
+              .where('service', 'array-contains-any',this.filterServiceList)
+              .where('by', '==',this.filterCreator)
+              .where('ref', '==',this.filterRef)
               .orderBy("timestamp", "desc").get()
     }
 
@@ -278,6 +374,7 @@ methods:{
     },
 
   saveData(data){
+    console.log(data.service)
     console.log(data)
     var othr = false
     if(data.by != this.creators[0] && data.by != this.creators[1]  ){
@@ -287,6 +384,7 @@ methods:{
     firebase.firestore().collection("datas").add({
       service: data.service,
       persons: data.persons,
+      ref:data.ref,
       date: data.date,
       by: data.by,
       remarks: data.remarks,
@@ -319,17 +417,25 @@ methods:{
 
     analyzeData(){
       console.log(this.testData.labels)
-      this.testData.datasets[0].data = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+      this.testData.datasets[0].data = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
       this.usedServicesCount = 0
       this.totalPersons = 0
 
       for(let d = 0; d < this.datas.length; d++){
         console.log(this.datas[d].service)
         for(let i = 0; i < this.testData.labels.length; i++){
-          if(this.testData.labels[i] == this.datas[d].service){
-            this.testData.datasets[0].data[i] += this.datas[d].persons
-            console.log(this.testData.datasets[0].data[i])
-            // print(this.datas[d].service)
+          if(this.filterServiceList.length > 0){
+            if(this.datas[d].service.includes(this.testData.labels[i])){
+              if(this.filterServiceList.includes(this.testData.labels[i])){
+                this.testData.datasets[0].data[i] += 1
+                console.log(this.testData.datasets[0].data[i])
+              }
+          }
+          }else{
+            if(this.datas[d].service.includes(this.testData.labels[i])){
+              this.testData.datasets[0].data[i] += 1
+              console.log(this.testData.datasets[0].data[i])
+          }
           }
         }
       }
@@ -357,7 +463,9 @@ methods:{
     clearFilters(){
       this.filterService =""
       this.filterCreator = ""
+      this.filterRef = 0
       this.fromDate = ""
+      this.filterServiceList = []
       this.getBlocks()
     }
 
@@ -366,6 +474,58 @@ methods:{
 </script>
 
 <style>
+.title-srv{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.title-srv h3{
+    padding: 10px;
+    margin: 5px;
+    background-color: #f1f1f1;
+    border-radius: 16px;
+}
+
+.f-check-list {
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+
+.f-check-list-content {
+  max-height: 200px;
+
+  outline: none;
+    border-radius: 6px;
+    /* height: 50px; */
+    border: none;
+    /* margin-bottom: 21px; */
+    font-size: large;
+    padding: 12px 20px;
+    text-align: left; 
+  transition: 0.4s;   
+  width: 90%;
+  max-height: 200px;
+  background-color: #eaf2ff;
+  border: solid 1px #f1f1f1;
+  overflow-y: scroll;
+}
+
+.f-check-list-content li{
+    list-style: none;
+    background-color: #eeeeee;
+    margin-bottom: 5px;
+    border-radius: 6px;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+}
+
+
 .pop-menu{
     display: flex;
     position: fixed;
