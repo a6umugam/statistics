@@ -6,7 +6,7 @@
         <a class="purple big" @click="viewMenu='form'"> <img src="@/assets/icons/plus.svg" width="30"> Nouveau</a>
         <a class="grey big" @click="pickRef = !pickRef"> <img src="@/assets/icons/hash.svg" width="30"  >  REF / NOM</a>
         <div class="inner-capsule" v-if="pickRef">
-          <input type="number" class="input-single nom" v-model="filterRef" @change="getBlocks">
+          <input type="text" class="input-single nom" v-model="filterRef" @change="getBlocks">
         </div>
 
         <a class="grey big"  @click="pickDateRange = !pickDateRange" > <img src="@/assets/icons/calendar.svg" width="30"> Plage de dates</a>
@@ -27,7 +27,7 @@
 
         <div class="f-check-list" v-if="pickServices">
             <ul class="f-check-list-content">
-                <li v-for="srv in services" :key=srv >
+                <li v-for="srv in services.sort()" :key=srv >
                     <input :value="srv" :name="srv" type="checkbox" v-model="filterServiceList"  @change="getBlocks"/>
                     <label :for="srv">{{srv}}</label>
                 </li>
@@ -60,6 +60,7 @@
         <div class="title-srv" v-else>
           <h3 v-for="srv in filterServiceList" :key="srv">{{srv}}</h3>
         </div>
+        <h3 class="left" >Totale des interventions: {{totalReports}} </h3>
         <!-- <h3 class="left">Nombre de personnes: {{totalPersons}} </h3> -->
         <!-- <p class="right">*Hover on top of colors to know service name</p> -->
         <!-- <p class="right">*Chart is based on selected date range</p> -->
@@ -101,6 +102,7 @@ export default {
       hasScrolledToBottom: false,
       usedServicesCount:0,
       totalPersons:0,
+      totalReports:0,
       fromDate:"",
       toDate:"",
       filterService:'',
@@ -358,7 +360,6 @@ methods:{
       snapshot = await firebase.firestore()
       .collection('datas')
       .orderBy("timestamp", "desc")
-      .limit(8)
       .get()
     }
 
@@ -420,8 +421,10 @@ methods:{
       this.testData.datasets[0].data = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
       this.usedServicesCount = 0
       this.totalPersons = 0
+      this.totalReports = 0
 
       for(let d = 0; d < this.datas.length; d++){
+        this.totalReports += 1
         console.log(this.datas[d].service)
         for(let i = 0; i < this.testData.labels.length; i++){
           if(this.filterServiceList.length > 0){

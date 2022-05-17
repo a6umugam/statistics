@@ -5,7 +5,7 @@
         
         <div class="check-list">
             <ul class="check-list-content">
-                <li v-for="srv in services" :key=srv >
+                <li v-for="srv in services.sort()" :key=srv >
                     <input :value="srv" :name="srv" type="checkbox" v-model="formData.service" />
                     <label :for="srv">{{srv}}</label>
                 </li>
@@ -18,7 +18,7 @@
             <option v-for="srv in services" :value="srv" :key=srv >{{srv}}</option>
         </select> -->
         <p>REF# / NOM</p>
-        <input type="number" class="input-single" v-model="formData.ref">
+        <input type="text" class="input-single" v-model="formData.ref">
         <p>Date</p>
         <input type="date" id="date" name="date" class="input-single" v-model="formData.date">
         <p>Crée par</p>
